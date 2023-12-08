@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Form</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+
+</head>
+
+<body>
+
+    <div class="col-12 d-flex">
+        <div class="card" style="width: 30%;">
+            <a href="#" class="d-block"><img width="100" height="100" src="./logo.png" class="card-img-top"></a>
+        </div>
+        <div class="card text-center" style="width: 70%;">
+            <h1 class="mt-3"
+                style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; letter-spacing: 1px; color:#4c7ebc;">
+                Digi Tech Care India</h1>
+            <h4 class="text-muted"
+                style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">
+                Alamgir Sardar</h4>
+        </div>
+    </div>
+
+    <fieldset class="form-fieldset">
+        <div class="mb-3">
+            <label class="form-label required">Company Name</label>
+            <input type="text" placeholder="Enter Company Name" class="form-control" autocomplete="off">
+        </div>
+        <div class="mb-3">
+            <label class="form-label required">Woner Name</label>
+            <input type="text" placeholder="Enter Company Woner Name" class="form-control" autocomplete="off">
+        </div>
+        <div class="mb-3">
+            <label class="form-label required">Contact Number</label>
+            <input type="tel" placeholder="Enter Company Contact Number" class="form-control" autocomplete="off">
+        </div>
+        <div class="mb-3">
+            <label class="form-label required">Email Address</label>
+            <input type="email" placeholder="Enter Company Email Address" class="form-control" autocomplete="off">
+        </div>
+        <div class="mb-3">
+            <label class="form-label required">Company Category</label>
+            <input type="text" class="form-control my-1" placeholder="Category 1" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 2" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 3" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 4" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 5" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 6" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 7" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 8" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 9" autocomplete="off">
+            <input type="text" class="form-control my-1" placeholder="Category 10" autocomplete="off">
+        </div>
+        <div class="mb-3">
+            <label class="form-label required">Company Address</label>
+            <textarea class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <div class="form-label">Upload Picture</div>
+            <input type="file" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label required">Have Website</label>
+            <div class="form-selectgroup">
+                <label class="form-selectgroup-item">
+                    <input type="radio" name="web" value="yes" class="form-selectgroup-input">
+                    <span class="form-selectgroup-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24"
+                            height="24" viewBox="0 0 24 24" stroke-width="2" stroke="green" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M5 12l5 5l10 -10" />
+                        </svg>
+                        Yes</span>
+                </label>
+                <label class="form-selectgroup-item">
+                    <input type="radio" name="web" value="no" class="form-selectgroup-input">
+                    <span class="form-selectgroup-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24"
+                            height="24" viewBox="0 0 24 24" stroke-width="2" stroke="red" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M18 6l-12 12" />
+                            <path d="M6 6l12 12" />
+                        </svg>
+                        No</span>
+                </label>
+
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Your Address <small class="small mark text-muted">Auto Detacted</small></label>
+            <input id="location" type="text" readonly value="" placeholder="Getting Location..." class="form-control"
+                autocomplete="off">
+        </div>
+
+        <a href="#" class="btn btn-primary btn-pill w-100">
+            Primary
+        </a>
+    </fieldset>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const crrLocation = document.getElementById("location")
+
+        socket.on('connection', () => {
+            console.log('connected to server');
+        });
+
+
+        if (navigator.geolocation) {
+            const successCallback = (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+                crrLocation.value = `Latitude: ${latitude}, Longitude: ${longitude}`
+            };
+
+            const errorCallback = (error) => {
+                console.log(`Error: ${error.message}`);
+                crrLocation.value = "Error to get location. Try again"
+            };
+
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
+        } else {
+            console.log('Geolocation is not supported by this browser');
+        }
+
+
+        function convertFileToBase64(file) {
+            // Read the file
+            const fileReader = new FileReader();
+            fileReader.readAsArrayBuffer(file);
+
+            // Wait for the file to be read
+            fileReader.onload = () => {
+                // Convert the file to Base64
+                const base64Encoded = btoa(fileReader.result);
+
+                // Display the Base64 text
+                alert(base64Encoded);
+            };
+        }
+
+        function base64ToPng(base64String) {
+            // Create a new image element
+            var img = new Image();
+
+            // Set the source of the image to the Base64 string
+            img.src = "data:image/png;base64," + base64String;
+
+            // When the image has loaded, do something with it (e.g., append it to the document)
+            img.onload = function () {
+                // For example, append the image to the body
+                document.body.appendChild(img);
+            };
+        }
+    </script>
+</body>
+
+</html>
